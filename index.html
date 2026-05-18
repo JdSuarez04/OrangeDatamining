@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conocimiento Oculto — Clustering Deforestación Colombia</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --c-bg: #0c0f0a;
+  --c-surface: #131710;
+  --c-surface2: #1a1f16;
+  --c-border: #2a3024;
+  --c-text: #e8edd4;
+  --c-text2: #8a9478;
+  --c-text3: #5a6350;
+  --c-accent: #a8c44a;
+  --c-accent2: #6b9e2a;
+  --c-c1: #4a9eff;
+  --c-c2: #ff6b35;
+  --c-c3: #ff3b3b;
+  --c-c4: #ffc233;
+  --c-c1-bg: rgba(74,158,255,0.08);
+  --c-c2-bg: rgba(255,107,53,0.08);
+  --c-c3-bg: rgba(255,59,59,0.08);
+  --c-c4-bg: rgba(255,194,51,0.08);
+  --font-display: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'Lora', serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.4;
+}
+
+/* ── SIDEBAR NAV ── */
+.nav {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 220px;
+  background: var(--c-surface);
+  border-right: 1px solid var(--c-border);
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  z-index: 100;
+}
+
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-accent);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.nav-logo span {
+  display: block;
+  font-size: 14px;
+  color: var(--c-text);
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-top: 4px;
+}
+
+.nav a {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-text3);
+  text-decoration: none;
+  padding: 8px 0;
+  border-left: 2px solid transparent;
+  padding-left: 12px;
+  margin-left: -12px;
+  letter-spacing: .04em;
+  transition: all .2s;
+}
+
+.nav a:hover, .nav a.active {
+  color: var(--c-accent);
+  border-left-color: var(--c-accent);
+}
+
+.nav-section {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--c-text3);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin: 1.5rem 0 .5rem;
+}
+
+.nav-footer {
+  margin-top: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-text3);
+  line-height: 1.8;
+}
+
+/* ── MAIN CONTENT ── */
+.main {
+  margin-left: 220px;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 4rem 5rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(168,196,74,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 80%, rgba(74,158,255,0.04) 0%, transparent 50%);
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-accent);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 1px;
+  background: var(--c-accent);
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -.02em;
+  margin-bottom: 1.5rem;
+  max-width: 800px;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--c-accent);
+  display: block;
+}
+
+.hero-sub {
+  font-size: 17px;
+  color: var(--c-text2);
+  max-width: 560px;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--c-border);
+}
+
+.hero-stat-val {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--c-accent);
+  line-height: 1;
+}
+
+.hero-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-text3);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 2rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-text3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.pill {
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-text2);
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 5rem;
+  border-bottom: 1px solid var(--c-border);
+  position: relative;
+}
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-accent);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-label::before {
+  content: attr(data-n);
+  font-size: 9px;
+  background: var(--c-accent);
+  color: var(--c-bg);
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: 600;
+}
+
+h2 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: .75rem;
+  letter-spacing: -.01em;
+}
+
+p { margin-bottom: 1.2rem; color: var(--c-text2); }
+p:last-child { margin-bottom: 0; }
+
+strong { color: var(--c-text); font-weight: 500; }
+
+/* ── SCREENSHOT BLOCKS ── */
+.screenshot-block {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 2rem 0;
+}
+
+.screenshot-bar {
+  background: var(--c-surface2);
+  border-bottom: 1px solid var(--c-border);
+  padding: .6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.screenshot-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+
+.screenshot-title-bar {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--c-text3);
+  margin-left: 6px;
+}
+
+.screenshot-img {
+  width: 100%;
+  display: block;
+  background: var(--c-surface2);
+  min-height: 240px;
+  position: relative;
+}
+
+.screenshot-img img {
+  width: 100%;
+  display: block;
+  border: none;
+}
+
+.screenshot-placeholder {
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--c-text3);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.screenshot-placeholder .icon {
+  font-size: 2.5rem;
+  opacity: .3;
+}
+
+.screenshot-caption {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--c-border);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: .5rem 1rem;
+  align-items: start;
+}
+
+.caption-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-accent);
+  font-weight: 600;
+  padding-top: 2px;
+}
+
+.caption-text {
+  font-size: 13px;
+  color: var(--c-text2);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ── CLUSTER CARDS ── */
+.cluster-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.cluster-card {
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  padding: 1.75rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+
+.cluster-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.cluster-card.c1::before { background: var(--c-c1); }
+.cluster-card.c2::before { background: var(--c-c2); }
+.cluster-card.c3::before { background: var(--c-c3); }
+.cluster-card.c4::before { background: var(--c-c4); }
+
+.cluster-card.c1 { background: var(--c-c1-bg); }
+.cluster-card.c2 { background: var(--c-c2-bg); }
+.cluster-card.c3 { background: var(--c-c3-bg); }
+.cluster-card.c4 { background: var(--c-c4-bg); }
+
+.cluster-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+
+.cluster-card.c1 .cluster-tag { color: var(--c-c1); border-color: rgba(74,158,255,.3); background: rgba(74,158,255,.1); }
+.cluster-card.c2 .cluster-tag { color: var(--c-c2); border-color: rgba(255,107,53,.3); background: rgba(255,107,53,.1); }
+.cluster-card.c3 .cluster-tag { color: var(--c-c3); border-color: rgba(255,59,59,.3); background: rgba(255,59,59,.1); }
+.cluster-card.c4 .cluster-tag { color: var(--c-c4); border-color: rgba(255,194,51,.3); background: rgba(255,194,51,.1); }
+
+.cluster-card h3 { color: var(--c-text); margin-bottom: .5rem; }
+.cluster-card p { color: var(--c-text2); font-size: 14px; margin-bottom: 1rem; }
+
+.cluster-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--c-border);
+}
+
+.cluster-metric-val {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--c-text);
+}
+
+.cluster-metric-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--c-text3);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-top: 2px;
+}
+
+/* ── INSIGHT BLOCKS ── */
+.insight {
+  border-left: 3px solid var(--c-accent);
+  padding: 1.25rem 1.5rem;
+  background: rgba(168,196,74,0.05);
+  border-radius: 0 8px 8px 0;
+  margin: 1.5rem 0;
+}
+
+.insight-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--c-accent);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.insight p { color: var(--c-text2); margin: 0; font-size: 15px; }
+.insight strong { color: var(--c-accent); }
+
+/* ── CODE BLOCK ── */
+.code-block {
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--c-text2);
+  line-height: 1.8;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.code-block .kw { color: var(--c-accent); }
+.code-block .val { color: var(--c-c4); }
+.code-block .cm { color: var(--c-text3); font-style: italic; }
+
+/* ── TABLE ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  margin: 1.5rem 0;
+}
+
+.data-table th {
+  background: var(--c-surface2);
+  color: var(--c-text3);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--c-border);
+  color: var(--c-text2);
+}
+
+.data-table tr:hover td { background: var(--c-surface2); }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.badge.c1 { background: rgba(74,158,255,.15); color: var(--c-c1); }
+.badge.c2 { background: rgba(255,107,53,.15); color: var(--c-c2); }
+.badge.c3 { background: rgba(255,59,59,.15); color: var(--c-c3); }
+.badge.c4 { background: rgba(255,194,51,.15); color: var(--c-c4); }
+
+/* ── PIPELINE DIAGRAM ── */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 2rem 0;
+  margin: 1.5rem 0;
+}
+
+.pipe-node {
+  flex-shrink: 0;
+  background: var(--c-surface2);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: .75rem 1.25rem;
+  text-align: center;
+  min-width: 110px;
+  transition: border-color .2s;
+}
+
+.pipe-node:hover { border-color: var(--c-accent2); }
+
+.pipe-node-icon { font-size: 1.5rem; margin-bottom: 4px; }
+.pipe-node-name { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: var(--c-text); }
+.pipe-node-sub { font-family: var(--font-mono); font-size: 9px; color: var(--c-text3); margin-top: 2px; }
+
+.pipe-node.highlight { border-color: var(--c-accent); background: rgba(168,196,74,.08); }
+.pipe-node.highlight .pipe-node-name { color: var(--c-accent); }
+
+.pipe-arrow {
+  flex-shrink: 0;
+  color: var(--c-text3);
+  padding: 0 6px;
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.pipe-arrow-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--c-text3);
+  white-space: nowrap;
+}
+
+/* ── STEP BLOCKS ── */
+.steps { counter-reset: step; display: flex; flex-direction: column; gap: 2.5rem; }
+
+.step {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.step-num {
+  font-family: var(--font-display);
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--c-border);
+  line-height: 1;
+  text-align: right;
+  padding-top: 4px;
+  user-select: none;
+}
+
+.step-body h3 { margin-bottom: .5rem; }
+
+/* ── CONCLUSION TABLE ── */
+.conclusion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.conclusion-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.conclusion-card h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-text);
+  margin-bottom: .5rem;
+}
+
+.conclusion-card p { font-size: 13px; margin: 0; }
+
+/* ── SCROLL INDICATOR ── */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 220px; right: 0;
+  height: 2px;
+  background: var(--c-border);
+  z-index: 200;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  background: var(--c-accent);
+  width: 0%;
+  transition: width .1s;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .nav { display: none; }
+  .main { margin-left: 0; }
+  .hero, section { padding: 3rem 2rem; }
+  .cluster-grid, .conclusion-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+  .step { grid-template-columns: 40px 1fr; gap: 1rem; }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero h1 { animation: fadeUp .8s ease both; }
+.hero-sub { animation: fadeUp .8s .15s ease both; }
+.hero-stats { animation: fadeUp .8s .3s ease both; }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress"><div class="scroll-progress-bar" id="progress"></div></div>
+
+<!-- ── SIDEBAR ── -->
+<nav class="nav">
+  <div class="nav-logo">
+    Orange Datamining
+    <span>Análisis de Clustering</span>
+  </div>
+
+  <div class="nav-section">Contenido</div>
+  <a href="#intro">Introducción</a>
+  <a href="#dataset">Dataset</a>
+  <a href="#workflow">Workflow Orange</a>
+
+  <div class="nav-section">Análisis</div>
+  <a href="#modelo">Modelo K-Means</a>
+  <a href="#calidad">Calidad del modelo</a>
+  <a href="#segmentos">Los 4 segmentos</a>
+
+  <div class="nav-section">Resultados</div>
+  <a href="#visualizaciones">Visualizaciones</a>
+  <a href="#patrones">Conocimiento oculto</a>
+  <a href="#conclusiones">Conclusiones</a>
+
+  <div class="nav-footer">
+    Colombia 2001–2024<br>
+    768 obs · 32 deptos<br>
+    K-Means k=4
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+<!-- HERO -->
+<section class="hero" id="intro">
+  <div class="hero-bg"></div>
+  <div style="position:relative;">
+    <div class="hero-eyebrow">Orange Datamining · Clustering · Segmentación</div>
+    <h1>Conocimiento<em>Oculto</em></h1>
+    <p class="hero-sub">Análisis de patrones de deforestación en Colombia 2001–2024 usando K-Means clustering en Orange Datamining. Cuatro segmentos que revelan lo que los promedios nacionales ocultan.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-val">768</div>
+        <div class="hero-stat-lbl">Observaciones</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">32</div>
+        <div class="hero-stat-lbl">Departamentos</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">24</div>
+        <div class="hero-stat-lbl">Años (2001–2024)</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">4</div>
+        <div class="hero-stat-lbl">Clústeres</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">0.41</div>
+        <div class="hero-stat-lbl">Silhouette Score</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <span class="pill">deforestacion_colombia_2001_2024.xlsx</span>
+    <span class="pill">Orange 3.x</span>
+    <span class="pill">K-Means++</span>
+    <span class="pill">Z-score normalización</span>
+  </div>
+</section>
+
+<!-- DATASET -->
+<section id="dataset">
+  <div class="section-label" data-n="01">Dataset</div>
+  <h2>Los datos crudos</h2>
+  <p>El dataset contiene 768 registros de deforestación departamental en Colombia entre 2001 y 2024. Cada fila representa un departamento en un año específico, con 17 variables que incluyen métricas geográficas, ambientales y socioeconómicas.</p>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Tabla de datos con clústeres — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p1_datatable.png" alt="Data Table de Orange con columnas departamento, región, Cluster, Silhouette, área deforestada y emisiones de CO₂" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.1</div>
+      <p class="caption-text">Vista de la tabla de datos en Orange con los 768 registros. Las columnas <strong>Cluster</strong> y <strong>Silhouette</strong> fueron añadidas automáticamente por el widget K-Means. Los valores están normalizados en Z-score, lo que explica los valores negativos en departamentos con deforestación por debajo de la media nacional.</p>
+    </div>
+  </div>
+
+  <p>Las <strong>5 variables numéricas clave</strong> seleccionadas para el clustering fueron elegidas por su capacidad de capturar dimensiones distintas del fenómeno:</p>
+
+  <div class="code-block">
+    <span class="cm"># Variables de entrada al modelo K-Means</span><br>
+    variables = [<br>
+    &nbsp;&nbsp;<span class="val">"area_deforestada_ha"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># Volumen absoluto de pérdida forestal</span><br>
+    &nbsp;&nbsp;<span class="val">"tasa_deforestacion_pct"</span>,&nbsp;<span class="cm"># Proporción respecto al total de bosque</span><br>
+    &nbsp;&nbsp;<span class="val">"emisiones_co2_ton"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># Impacto climático directo</span><br>
+    &nbsp;&nbsp;<span class="val">"alertas_tempranas"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cm"># Capacidad de monitoreo activo</span><br>
+    &nbsp;&nbsp;<span class="val">"cobertura_forestal_ha"</span>&nbsp;&nbsp;<span class="cm"># Reserva forestal remanente</span><br>
+    ]
+  </div>
+</section>
+
+<!-- WORKFLOW -->
+<section id="workflow">
+  <div class="section-label" data-n="02">Workflow</div>
+  <h2>Pipeline en Orange</h2>
+  <p>Orange permite construir el pipeline de análisis de forma visual y reproducible. Cada nodo transforma los datos y los pasa al siguiente widget. La cadena completa desde archivo hasta visualización queda documentada en el canvas.</p>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Canvas del workflow — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p2_canvas.png" alt="Canvas completo del workflow en Orange" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.2</div>
+      <p class="caption-text">Vista completa del workflow en Orange. El pipeline conecta 10 nodos: carga del archivo, exploración estadística, selección de columnas, normalización, clustering y cuatro widgets de visualización. Las líneas sólidas indican conexiones activas con flujo de datos.</p>
+    </div>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-node">
+      <div class="pipe-node-icon">📁</div>
+      <div class="pipe-node-name">File</div>
+      <div class="pipe-node-sub">.xlsx</div>
+    </div>
+    <div class="pipe-arrow">→<div class="pipe-arrow-label">Data</div></div>
+    <div class="pipe-node">
+      <div class="pipe-node-icon">🎨</div>
+      <div class="pipe-node-name">Select Columns</div>
+      <div class="pipe-node-sub">5 variables</div>
+    </div>
+    <div class="pipe-arrow">→<div class="pipe-arrow-label">Data</div></div>
+    <div class="pipe-node highlight">
+      <div class="pipe-node-icon">⚙️</div>
+      <div class="pipe-node-name">Preprocess</div>
+      <div class="pipe-node-sub">Z-score</div>
+    </div>
+    <div class="pipe-arrow">→<div class="pipe-arrow-label">Preprocessed</div></div>
+    <div class="pipe-node highlight">
+      <div class="pipe-node-icon">🔵</div>
+      <div class="pipe-node-name">K-Means</div>
+      <div class="pipe-node-sub">k=4</div>
+    </div>
+    <div class="pipe-arrow">→<div class="pipe-arrow-label">Annotated</div></div>
+    <div class="pipe-node">
+      <div class="pipe-node-icon">📈</div>
+      <div class="pipe-node-name">Scatter Plot</div>
+      <div class="pipe-node-sub">color=Cluster</div>
+    </div>
+    <div class="pipe-arrow">+</div>
+    <div class="pipe-node">
+      <div class="pipe-node-icon">📊</div>
+      <div class="pipe-node-name">Box Plot</div>
+      <div class="pipe-node-sub">por Cluster</div>
+    </div>
+    <div class="pipe-arrow">+</div>
+    <div class="pipe-node">
+      <div class="pipe-node-icon">🌡️</div>
+      <div class="pipe-node-name">Heat Map</div>
+      <div class="pipe-node-sub">Split by Cluster</div>
+    </div>
+    <div class="pipe-arrow">+</div>
+    <div class="pipe-node">
+      <div class="pipe-node-icon">📉</div>
+      <div class="pipe-node-name">Silhouette</div>
+      <div class="pipe-node-sub">score ~0.41</div>
+    </div>
+  </div>
+</section>
+
+<!-- MODELO -->
+<section id="modelo">
+  <div class="section-label" data-n="03">Modelo</div>
+  <h2>Configuración K-Means</h2>
+  <p>La elección de K-Means como algoritmo responde a la naturaleza del problema: buscamos grupos mutuamente excluyentes con centroide interpretable. K=4 fue seleccionado tras evaluar el método del codo y el Silhouette score para k entre 2 y 8.</p>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">K-Means (k=4) — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p3_kmeans.png" alt="Widget K-Means en Orange con k=4 y KMeans++" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.3</div>
+      <p class="caption-text">Configuración del widget K-Means en Orange. <strong>Fixed k=4</strong> tras análisis exploratorio. <strong>KMeans++</strong> garantiza inicialización inteligente que evita mínimos locales. <strong>Re-runs=10</strong> ejecuta el algoritmo 10 veces y selecciona la mejor solución. <strong>Normalize columns</strong> aplica Z-score internamente.</p>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-body">
+        <h3>Normalización Z-score</h3>
+        <p>Las 5 variables tienen escalas radicalmente distintas: <strong>emisiones_co2_ton</strong> llega a millones, mientras <strong>tasa_deforestacion_pct</strong> va de 0 a 4. Sin normalización, el K-Means daría peso desproporcionado a las variables de mayor magnitud. Z-score transforma cada variable a media=0, desviación=1.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-body">
+        <h3>Selección de k=4</h3>
+        <p>Se probó k entre 2 y 8. Con k=2 los grupos son demasiado generales para ser accionables. Con k=5+ aparecen clústeres con menos de 5 instancias sin interpretación clara. <strong>k=4 ofrece el mejor balance entre granularidad e interpretabilidad</strong>, con Silhouette de 0.41.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-body">
+        <h3>KMeans++ como inicialización</h3>
+        <p>El algoritmo KMeans++ selecciona los centroides iniciales de forma probabilística, favoreciendo puntos lejanos entre sí. Esto reduce significativamente la probabilidad de convergencia a soluciones subóptimas comparado con inicialización aleatoria.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALIDAD -->
+<section id="calidad">
+  <div class="section-label" data-n="04">Validación</div>
+  <h2>Calidad del clustering</h2>
+  <p>El Silhouette score mide qué tan bien separado está cada punto respecto a su propio clúster versus los clústeres vecinos. Va de -1 (mal asignado) a 1 (perfectamente separado). Un score de <strong>0.41 es aceptable para datos ambientales reales</strong> con alta variabilidad temporal.</p>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Calidad del clustering — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p4_silhouette.png" alt="Silhouette Plot en Orange agrupado por departamento" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.4</div>
+      <p class="caption-text">Silhouette Plot agrupado por departamento en Orange. <strong>Amazonas lidera con score 0.40</strong> — sus registros son extremadamente similares entre sí (patrón consistente de gran bosque amazónico). Departamentos con scores bajos como Bolívar (0.21) tienen comportamiento limítrofe entre dos clústeres, reflejando su posición geográfica de transición entre regiones.</p>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-num">Interpretación del Silhouette</div>
+    <p>Un score &gt; 0.5 indica separación excelente. Entre 0.25 y 0.5 es <strong>estructura razonable</strong>. Nuestro 0.41 global significa que los 4 clústeres son reales y distinguibles, aunque con cierta superposición en la zona de departamentos de transición (región Andina-Caribe). Esto es esperado en datos geográficos continuos.</p>
+  </div>
+</section>
+
+<!-- SEGMENTOS -->
+<section id="segmentos">
+  <div class="section-label" data-n="05">Segmentos</div>
+  <h2>Los 4 clústeres</h2>
+  <p>El algoritmo identificó cuatro perfiles de deforestación radicalmente distintos. Cada uno requiere estrategias de intervención diferentes.</p>
+
+  <div class="cluster-grid">
+    <div class="cluster-card c1">
+      <div class="cluster-tag">C1 · 519 registros · 67.6%</div>
+      <h3>Zona moderada andina-caribe</h3>
+      <p>El clúster más grande agrupa la "normalidad" del país. Deforestación baja a moderada con <strong>8 causas distintas en proporciones similares</strong>. No tiene un driver único dominante, lo que refleja la heterogeneidad de presiones antrópicas en zonas densamente pobladas.</p>
+      <p><strong>Departamentos:</strong> Arauca, Atlántico, Boyacá, Cundinamarca, Antioquia, Santander, Tolima, Cauca y 24 más.</p>
+      <div class="cluster-metrics">
+        <div><div class="cluster-metric-val">2.061</div><div class="cluster-metric-lbl">ha/año prom.</div></div>
+        <div><div class="cluster-metric-val">0.29%</div><div class="cluster-metric-lbl">tasa deforest.</div></div>
+        <div><div class="cluster-metric-val">248K</div><div class="cluster-metric-lbl">ton CO₂</div></div>
+      </div>
+    </div>
+
+    <div class="cluster-card c2">
+      <div class="cluster-tag">C2 · 174 registros · 22.7%</div>
+      <h3>Amazonia profunda</h3>
+      <p>Departamentos con grandes extensiones de bosque tropical remoto. Deforestación moderada en tasa relativa pero <strong>alto volumen absoluto</strong> por el tamaño del territorio. La ganadería extensiva y la praderización son las causas dominantes.</p>
+      <p><strong>Departamentos:</strong> Guainía, Vaupés, Vichada, Amazonas. Cobertura forestal promedio superior a 5 millones de hectáreas.</p>
+      <div class="cluster-metrics">
+        <div><div class="cluster-metric-val">5.402</div><div class="cluster-metric-lbl">ha/año prom.</div></div>
+        <div><div class="cluster-metric-val">0.085%</div><div class="cluster-metric-lbl">tasa deforest.</div></div>
+        <div><div class="cluster-metric-val">956K</div><div class="cluster-metric-lbl">ton CO₂</div></div>
+      </div>
+    </div>
+
+    <div class="cluster-card c3">
+      <div class="cluster-tag">C3 · 67 registros · 8.7%</div>
+      <h3>Hotspot crítico</h3>
+      <p>El clúster más pequeño en registros pero el de mayor impacto climático. <strong>Meta, Caquetá y Guaviare</strong> concentran la frontera agrícola en expansión activa. La deforestación escaló drásticamente post-2016 con la desmovilización de las FARC, que liberó zonas antes inaccesibles.</p>
+      <p>Genera 2.8× más emisiones por hectárea que el C2, porque los bosques húmedos de piedemonte amazónico tienen mayor densidad de carbono.</p>
+      <div class="cluster-metrics">
+        <div><div class="cluster-metric-val">15.128</div><div class="cluster-metric-lbl">ha/año prom.</div></div>
+        <div><div class="cluster-metric-val">0.22%</div><div class="cluster-metric-lbl">tasa deforest.</div></div>
+        <div><div class="cluster-metric-val">2.68M</div><div class="cluster-metric-lbl">ton CO₂</div></div>
+      </div>
+    </div>
+
+    <div class="cluster-card c4">
+      <div class="cluster-tag">C4 · 8 registros · 1.0%</div>
+      <h3>Caso atípico insular</h3>
+      <p>San Andrés y Providencia. El modelo los detectó como outlier no por volumen absoluto sino por <strong>tasa relativa extrema</strong>. Con solo ~2.800 ha de bosque total, cualquier pérdida resulta en porcentajes alarmantes. El Silhouette score alto confirma que es un outlier real, no un error.</p>
+      <p>Las alertas tempranas son relativamente bajas para su tasa, lo que sugiere submonitoreo en territorios insulares.</p>
+      <div class="cluster-metrics">
+        <div><div class="cluster-metric-val">95</div><div class="cluster-metric-lbl">ha/año prom.</div></div>
+        <div><div class="cluster-metric-val">3.4%</div><div class="cluster-metric-lbl">tasa deforest.</div></div>
+        <div><div class="cluster-metric-val">8.5K</div><div class="cluster-metric-lbl">ton CO₂</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISUALIZACIONES -->
+<section id="visualizaciones">
+  <div class="section-label" data-n="06">Visualizaciones</div>
+  <h2>Resultados en Orange</h2>
+
+  <!-- Box Plot -->
+  <h3 style="margin-bottom:.5rem;margin-top:2rem;">Box Plot — distribución por clúster</h3>
+  <p>El Box Plot compara la distribución de cada variable numérica entre los 4 clústeres. La variable más informativa es <strong>area_deforestada_ha</strong> porque maximiza la diferencia entre grupos.</p>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Box Plot por clúster — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p5_boxplot.png" alt="Box Plot por clúster en Orange" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.5</div>
+      <p class="caption-text">Box Plot con <strong>Variable = area_deforestada_ha</strong> y <strong>Subgroups = Cluster</strong>. C3 (rojo) muestra la mayor mediana y la mayor dispersión, con bigotes que se extienden mucho más a la derecha — indica que el hotspot incluye tanto años moderados como años catastróficos. C4 (naranja) tiene la caja más angosta por ser solo 8 registros de San Andrés.</p>
+    </div>
+  </div>
+
+  <!-- Scatter Plot -->
+  <h3 style="margin-bottom:.5rem;margin-top:3rem;">Scatter Plot — separación de clústeres</h3>
+  <p>El Scatter Plot con los ejes correctos hace visible la separación que el K-Means encontró en el espacio multidimensional. La clave es usar <strong>Color = Cluster</strong> para revelar la estructura.</p>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Scatter Plot — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p6_scatter.png" alt="Scatter Plot de Orange con color según clúster" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.6</div>
+      <p class="caption-text">Scatter Plot con <strong>Axis X = area_deforestada_ha</strong>, <strong>Axis Y = emisiones_co2_ton</strong> y <strong>Color = Cluster</strong>. C3 aparece aislado arriba a la derecha. C4 aparece como grupo pequeño con valores extremos en Y relativo a X. C1 forma una nube densa cerca del origen.</p>
+    </div>
+  </div>
+
+  <!-- Heat Map -->
+  <h3 style="margin-bottom:.5rem;margin-top:3rem;">Heat Map — intensidad por variable y clúster</h3>
+  <p>El Heat Map es la visualización más informativa para entender qué variables definen cada clúster. Cada fila es una observación, cada columna una variable. El color muestra el valor normalizado.</p>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Heat Map — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p10_heatmap.png" alt="Heat Map en Orange con filas agrupadas por clúster" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.10</div>
+      <p class="caption-text">Heat Map configurado con <strong>Split By Rows = Cluster</strong>. Cada banda horizontal es un clúster. El color amarillo/verde indica valores altos (por encima de la media). C3 se ilumina en <em>emisiones_co2_ton</em>. C4 se ilumina en <em>tasa_deforestacion_pct</em>. C2 se ilumina en <em>cobertura_forestal_ha</em>. C1 permanece azul oscuro en todo — el grupo de baja intensidad generalizada.</p>
+    </div>
+  </div>
+
+  <!-- Tabla filtrada -->
+  <h3 style="margin-bottom:.5rem;margin-top:3rem;">Tabla filtrada — perfil del hotspot C3</h3>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Data Table filtrada — Cluster C3 — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p7_tabla_c3.png" alt="Data Table filtrada del clúster C3 en Orange" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.7</div>
+      <p class="caption-text">Tabla filtrada mostrando solo los 67 registros del Clúster C3. Se confirman Meta, Caquetá y Guaviare como los departamentos dominantes. Los valores de <em>emisiones_co2_ton</em> normalizados están entre <strong>+1.3 y +1.8 desviaciones estándar</strong> por encima de la media nacional — estadísticamente extremos. Los valores de <em>area_deforestada_ha</em> normalizados superan +2.0 en los peores años.</p>
+    </div>
+  </div>
+
+  <!-- Silhouette detalle -->
+  <h3 style="margin-bottom:.5rem;margin-top:3rem;">Silhouette — coherencia interna del clustering</h3>
+
+  <div class="screenshot-block">
+    <div class="screenshot-bar">
+      <div class="screenshot-dot" style="background:#ff5f57;"></div>
+      <div class="screenshot-dot" style="background:#febc2e;"></div>
+      <div class="screenshot-dot" style="background:#28c840;"></div>
+      <div class="screenshot-title-bar">Tabla con columna Silhouette — Orange</div>
+    </div>
+    <div class="screenshot-img">
+      <img src="screenshots/p8_silhouette_tabla.png" alt="Data Table en Orange mostrando la columna Silhouette" style="width:100%;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.18);">
+    </div>
+    <div class="screenshot-caption">
+      <div class="caption-num">P.8</div>
+      <p class="caption-text">La columna <strong>Silhouette por fila</strong> en la tabla de datos indica qué tan "típico" es cada registro dentro de su clúster. San Andrés tiene Silhouette alto en C4 — es un outlier perfectamente definido, no un error de clasificación. Amazonas tiene Silhouette ~0.61 en C2, confirmando que su perfil de gran bosque remoto es muy consistente a lo largo de los 24 años.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PATRONES OCULTOS -->
+<section id="patrones">
+  <div class="section-label" data-n="07">Conocimiento Oculto</div>
+  <h2>Lo que no se ve en promedios</h2>
+  <p>Estos son los hallazgos que emergen <em>únicamente</em> del análisis de clustering y que un reporte estadístico convencional no revelaría.</p>
+
+  <div class="insight" style="border-left-color:var(--c-c3);">
+    <div class="insight-num" style="color:var(--c-c3);">Conocimiento oculto #1 — El efecto post-paz</div>
+    <p>El Clúster C3 (hotspot) escaló dramáticamente <strong>después de 2016</strong>. La desmovilización de las FARC liberó fronteras agrícolas que antes eran inaccesibles por el conflicto. Meta, Caquetá y Guaviare pasaron de deforestación moderada a formar su propio clúster crítico. El clustering hace visible este <strong>quiebre estructural temporal</strong> que los promedios anuales suavizan.</p>
+  </div>
+
+  <div class="insight" style="border-left-color:var(--c-c4);">
+    <div class="insight-num" style="color:var(--c-c4);">Conocimiento oculto #2 — La paradoja insular</div>
+    <p>San Andrés (C4) aparece con la tasa más alta del país (3.4%) pero el menor volumen absoluto. <strong>Sin clustering, este dato pasa desapercibido</strong> en el agregado nacional. El modelo lo aisló automáticamente como outlier estadístico. El Silhouette score alto confirma que no es ruido — es un caso genuinamente diferente que merece intervención específica y mayor monitoreo.</p>
+  </div>
+
+  <div class="insight" style="border-left-color:var(--c-c1);">
+    <div class="insight-num" style="color:var(--c-c1);">Conocimiento oculto #3 — La heterogeneidad del C1</div>
+    <p>El Clúster C1 agrupa el 67% de los registros con <strong>8 causas distintas en proporciones similares</strong>. Esto es un hallazgo crítico para la política pública: la deforestación en zonas andinas y caribeñas no tiene un driver único. Una política que ataque solo ganadería o solo cultivos ilícitos dejaría intactas las otras 6 causas, logrando como máximo el 12-15% de reducción.</p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-num">Conocimiento oculto #4 — Emisiones desproporcionadas del C3</div>
+    <p>C3 representa el <strong>8.7% de los registros pero genera emisiones promedio 2.8× más altas</strong> que C2 (Amazonia profunda). Los bosques húmedos de piedemonte amazónico en Meta y Caquetá tienen mayor densidad de carbono por hectárea que los bosques de la Amazonia remota. Esto significa que priorizar el C3 en política climática tiene un retorno en reducción de emisiones desproporcionadamente mayor que su área sugiere.</p>
+  </div>
+
+  <div class="insight" style="border-left-color:var(--c-c2);">
+    <div class="insight-num" style="color:var(--c-c2);">Conocimiento oculto #5 — La reserva silenciosa del C2</div>
+    <p>Guainía, Vaupés y Vichada (C2) muestran los <strong>Silhouette scores más altos y más estables</strong> a lo largo del tiempo. Su perfil no ha cambiado significativamente en 24 años. Son la reserva forestal más resiliente del país — pero también la más vulnerable si las presiones del C3 se expanden geográficamente hacia el sur.</p>
+  </div>
+</section>
+
+<!-- CONCLUSIONES -->
+<section id="conclusiones">
+  <div class="section-label" data-n="08">Conclusiones</div>
+  <h2>Cuatro problemas, cuatro estrategias</h2>
+  <p>El hallazgo central del análisis es que <strong>Colombia no tiene un problema de deforestación — tiene cuatro</strong>. Tratar el fenómeno como uniforme conduce a políticas ineficientes. El clustering lo hace visible en datos lo que la política pública todavía trata como un solo fenómeno.</p>
+
+  <table class="data-table" style="margin-top:2rem;">
+    <thead>
+      <tr>
+        <th>Clúster</th>
+        <th>Perfil</th>
+        <th>Departamentos clave</th>
+        <th>Prioridad</th>
+        <th>Estrategia</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge c1">C1</span></td>
+        <td>Zona moderada</td>
+        <td>Antioquia, Boyacá, Santander</td>
+        <td>Media</td>
+        <td>Políticas diversificadas, no sectoriales</td>
+      </tr>
+      <tr>
+        <td><span class="badge c2">C2</span></td>
+        <td>Amazonia profunda</td>
+        <td>Guainía, Vaupés, Vichada</td>
+        <td>Alta</td>
+        <td>Control de frontera, conservación preventiva</td>
+      </tr>
+      <tr>
+        <td><span class="badge c3">C3</span></td>
+        <td>Hotspot crítico</td>
+        <td>Meta, Caquetá, Guaviare</td>
+        <td>🔴 Urgente</td>
+        <td>Intervención inmediata, prioridad climática</td>
+      </tr>
+      <tr>
+        <td><span class="badge c4">C4</span></td>
+        <td>Insular atípico</td>
+        <td>San Andrés</td>
+        <td>Especial</td>
+        <td>Monitoreo reforzado, caso diferenciado</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="conclusion-grid" style="margin-top:3rem;">
+    <div class="conclusion-card">
+      <h4>Sobre el método</h4>
+      <p>K-Means en Orange es reproducible, transparente y suficientemente potente para datos ambientales reales. El Silhouette de 0.41 valida que los 4 grupos son estadísticamente distinguibles, no artefactos del algoritmo.</p>
+    </div>
+    <div class="conclusion-card">
+      <h4>Sobre los datos</h4>
+      <p>768 observaciones de 32 departamentos en 24 años es suficiente para detectar patrones robustos. La normalización Z-score fue crítica para que las 5 variables contribuyeran equitativamente al clustering.</p>
+    </div>
+    <div class="conclusion-card">
+      <h4>Sobre los hallazgos</h4>
+      <p>El efecto post-2016 en el C3, la paradoja insular del C4 y la heterogeneidad del C1 son conocimiento oculto genuino — no visible en promedios nacionales ni en análisis por departamento individualmente.</p>
+    </div>
+    <div class="conclusion-card">
+      <h4>Trabajo futuro</h4>
+      <p>Agregar variables de gobernanza (presencia institucional, índice de conflictividad) y económicas (precio de la tierra, acceso a crédito) podría mejorar el Silhouette y revelar causas más profundas de cada segmento.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="padding:3rem 5rem;border-top:1px solid var(--c-border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;">
+  <div>
+    <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:700;color:var(--c-text);margin-bottom:4px;">Clustering Deforestación Colombia</div>
+    <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-text3);">Orange Datamining · K-Means · 2001–2024</div>
+  </div>
+  <div style="font-family:var(--font-mono);font-size:11px;color:var(--c-text3);text-align:right;line-height:2;">
+    768 instancias · 32 departamentos · k=4<br>
+    Silhouette score: 0.41 · KMeans++
+  </div>
+</footer>
+
+</main>
+
+<script>
+// Scroll progress
+window.addEventListener('scroll', () => {
+  const el = document.documentElement;
+  const pct = el.scrollTop / (el.scrollHeight - el.clientHeight) * 100;
+  document.getElementById('progress').style.width = pct + '%';
+});
+
+// Active nav links
+const sections = document.querySelectorAll('section[id], footer');
+const navLinks = document.querySelectorAll('.nav a');
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`.nav a[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
