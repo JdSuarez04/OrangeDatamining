@@ -22,15 +22,15 @@ Incluye:
 ## Capturas incluidas
 
 La carpeta `screenshots` contiene las imágenes usadas en la presentación:
-- `p1_datatable.png`
-- `p2_canvas.png`
-- `p3_kmeans.png`
-- `p4_silhouette.png`
-- `p5_boxplot.png`
-- `p6_scatter.png`
-- `p7_tabla_c3.png`
-- `p8_silhouette_tabla.png`
-- `p10_heatmap.png`
+- `screenshotsp1_datatable.png`
+- `screenshotsp2_canvas.png`
+- `screenshotsp3_kmeans.png`
+- `screenshotsp4_silhouette.png`
+- `screenshotsp5_boxplot.png`
+- `screenshotsp6_scatter.png`
+- `screenshotsp7_tabla_c3.png`
+- `screenshotsp8_silhouette_tabla.png`
+- `screenshotsp10_heatmap.png`
 
 ## Cómo ver el sitio localmente
 
